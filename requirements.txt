@@ -1,0 +1,35 @@
+# Core ML/DL Libraries
+torch>=2.8.0
+torchvision
+torchaudio
+transformers==4.56.2
+accelerate==1.8.1
+
+# Training & Optimization
+unsloth
+trl
+bitsandbytes
+peft
+xformers
+
+# Dataset & Data Processing
+datasets>=3.4.1,<4.0.0
+librosa
+soundfile
+numpy
+
+# HuggingFace Tools
+huggingface_hub>=0.34.0
+hf_transfer
+sentencepiece
+protobuf
+
+# Audio Processing & TTS
+omegaconf
+einx
+torchcodec
+onnxruntime-gpu
+
+# MiraTTS Dependencies (from git)
+git+https://github.com/ysharma3501/FastBiCodec.git
+git+https://github.com/ysharma3501/FlashSR.git

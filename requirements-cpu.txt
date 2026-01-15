@@ -1,0 +1,38 @@
+# CPU-only Requirements
+# Para ambientes sem GPU (não recomendado para treinamento, apenas inferência leve)
+
+# Core ML/DL Libraries (CPU versions)
+torch>=2.8.0
+torchvision
+torchaudio
+transformers==4.56.2
+accelerate==1.8.1
+
+# Training & Optimization (sem GPU)
+trl
+peft
+
+# Dataset & Data Processing
+datasets>=3.4.1,<4.0.0
+librosa
+soundfile
+numpy
+
+# HuggingFace Tools
+huggingface_hub>=0.34.0
+hf_transfer
+sentencepiece
+protobuf
+
+# Audio Processing & TTS
+omegaconf
+einx
+torchcodec
+onnxruntime  # CPU version
+
+# MiraTTS Dependencies (from git)
+git+https://github.com/ysharma3501/FastBiCodec.git
+git+https://github.com/ysharma3501/FlashSR.git
+
+# NOTA: bitsandbytes, xformers e unsloth não estão incluídos pois requerem GPU
+# O treinamento será MUITO LENTO sem GPU

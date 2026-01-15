@@ -1,0 +1,32 @@
+# Requirements for Google Colab
+# Use este arquivo no Colab, pois o PyTorch já vem pré-instalado
+
+# Training & Optimization
+unsloth
+trl
+bitsandbytes
+peft
+xformers
+accelerate==1.8.1
+
+# Dataset & Data Processing
+datasets>=3.4.1,<4.0.0
+librosa
+soundfile
+
+# HuggingFace Tools
+huggingface_hub>=0.34.0
+hf_transfer
+sentencepiece
+protobuf
+transformers==4.56.2
+
+# Audio Processing & TTS
+omegaconf
+einx
+torchcodec
+onnxruntime-gpu
+
+# MiraTTS Dependencies (from git)
+git+https://github.com/ysharma3501/FastBiCodec.git
+git+https://github.com/ysharma3501/FlashSR.git

@@ -1,0 +1,35 @@
+# Development Requirements
+# Inclui ferramentas de desenvolvimento além das dependências principais
+
+# Instalar requirements principais primeiro
+-r requirements.txt
+
+# Code Quality & Formatting
+black
+isort
+flake8
+pylint
+mypy
+
+# Testing
+pytest
+pytest-cov
+pytest-mock
+
+# Jupyter & Notebooks
+jupyter
+notebook
+ipywidgets
+
+# Documentation
+sphinx
+sphinx-rtd-theme
+
+# Debugging & Profiling
+ipdb
+line_profiler
+memory_profiler
+
+# Utilities
+tqdm
+python-dotenv
