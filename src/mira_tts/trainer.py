@@ -1,6 +1,7 @@
 """
 Training module for MiraTTS
 """
+import os
 import torch
 from trl import SFTTrainer, SFTConfig
 from .config import Config
@@ -22,6 +23,71 @@ class MiraTrainer:
         self.tokenizer = tokenizer
         self.config = config or Config()
         self.trainer = None
+        self._setup_logging()
+
+    def _setup_logging(self):
+        """Setup logging integrations (wandb and tensorboard)"""
+        report_to = []
+
+        # Setup WandB
+        if self.config.USE_WANDB:
+            try:
+                import wandb
+
+                # Set API key if provided
+                if self.config.WANDB_API_KEY:
+                    os.environ["WANDB_API_KEY"] = self.config.WANDB_API_KEY
+
+                # Initialize wandb
+                run_name = self.config.WANDB_RUN_NAME or f"miratts-{self.config.OUTPUT_DIR.split('/')[-1]}"
+
+                wandb.init(
+                    project=self.config.WANDB_PROJECT,
+                    name=run_name,
+                    entity=self.config.WANDB_ENTITY,
+                    config={
+                        "learning_rate": self.config.LEARNING_RATE,
+                        "batch_size": self.config.PER_DEVICE_TRAIN_BATCH_SIZE,
+                        "max_steps": self.config.MAX_STEPS,
+                        "model": self.config.MODEL_NAME,
+                        "num_samples": self.config.NUM_SAMPLES,
+                    }
+                )
+
+                report_to.append("wandb")
+                print(f"✓ WandB initialized: {self.config.WANDB_PROJECT}/{run_name}")
+
+            except ImportError:
+                print("⚠ WandB requested but not installed. Run: pip install wandb")
+                print("  Continuing without WandB...")
+            except Exception as e:
+                print(f"⚠ Failed to initialize WandB: {e}")
+                print("  Continuing without WandB...")
+
+        # Setup TensorBoard
+        if self.config.USE_TENSORBOARD:
+            try:
+                from torch.utils.tensorboard import SummaryWriter
+
+                # Create tensorboard directory
+                tb_dir = os.path.join(self.config.TENSORBOARD_LOG_DIR, self.config.OUTPUT_DIR.split('/')[-1])
+                os.makedirs(tb_dir, exist_ok=True)
+
+                report_to.append("tensorboard")
+                print(f"✓ TensorBoard enabled: {tb_dir}")
+                print(f"  View with: tensorboard --logdir={self.config.TENSORBOARD_LOG_DIR}")
+
+            except ImportError:
+                print("⚠ TensorBoard requested but not installed. Run: pip install tensorboard")
+                print("  Continuing without TensorBoard...")
+
+        # Update config
+        if report_to:
+            self.config.REPORT_TO = report_to
+        elif self.config.REPORT_TO == "none":
+            self.config.REPORT_TO = "none"
+
+        print(f"Logging to: {self.config.REPORT_TO}")
 
     def setup_trainer(self, train_dataset):
         """
@@ -79,7 +145,27 @@ class MiraTrainer:
         trainer_stats = self.trainer.train()
         print("Training complete!")
 
+        # Log final metrics
+        self._log_final_metrics(trainer_stats)
+
         return trainer_stats
+
+    def _log_final_metrics(self, trainer_stats):
+        """Log final training metrics to wandb"""
+        if self.config.USE_WANDB:
+            try:
+                import wandb
+
+                # Log final metrics
+                wandb.log({
+                    "final/train_loss": trainer_stats.training_loss,
+                    "final/train_runtime": trainer_stats.metrics.get("train_runtime", 0),
+                    "final/train_samples_per_second": trainer_stats.metrics.get("train_samples_per_second", 0),
+                })
+
+                print("✓ Final metrics logged to WandB")
+            except Exception as e:
+                print(f"⚠ Failed to log final metrics: {e}")
 
     def print_gpu_stats(self):
         """Print GPU memory statistics"""

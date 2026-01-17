@@ -4,6 +4,7 @@ torchvision
 torchaudio
 transformers==4.56.2
 accelerate==1.8.1
+einops==0.8.1
 
 # Training & Optimization
 unsloth
@@ -17,6 +18,7 @@ datasets>=3.4.1,<4.0.0
 librosa
 soundfile
 numpy
+pyyaml
 
 # HuggingFace Tools
 huggingface_hub>=0.34.0

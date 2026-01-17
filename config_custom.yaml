@@ -1,0 +1,47 @@
+# MiraTTS Training Configuration - Custom Dataset
+
+# Dataset configuration
+dataset:
+  type: "custom"  # Options: "ljspeech" or "custom"
+  path: "/path/to/your/dataset/"  # Root directory of your dataset
+  metadata_file: "metadata.csv"  # Name of the metadata file (relative to dataset path)
+  # Metadata format: "filepath|text" (one entry per line)
+  # Example:
+  #   wavs/audio001.wav|This is the first sentence.
+  #   wavs/audio002.wav|This is the second sentence.
+  num_samples: null  # Number of samples to use (null for all)
+  audio_column: "audio"  # Column name for audio in processed dataset
+  text_column: "text"  # Column name for text in processed dataset
+
+# Training configuration
+training:
+  max_steps: 100
+  learning_rate: 2.0e-4
+  batch_size: 2
+  gradient_accumulation_steps: 1
+  warmup_steps: 10
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+
+# Model configuration
+model:
+  pretrained_model: "YatharthS/MiraTTS"  # HuggingFace model ID
+  output_dir: "outputs_custom"
+  save_steps: 50
+  logging_steps: 10
+
+# Logging configuration (optional)
+logging:
+  use_wandb: false  # Enable Weights & Biases logging
+  wandb_project: "miratts-finetuning"
+  wandb_run_name: null  # Auto-generated if null
+  wandb_entity: null  # Your wandb username/team
+  wandb_api_key: null  # Or set WANDB_API_KEY env variable
+  use_tensorboard: false
+  tensorboard_log_dir: "runs"
+
+# HuggingFace Hub configuration (optional)
+hub:
+  push_to_hub: false
+  repo_name: null  # e.g., "username/miratts-finetuned"
+  token: null  # HuggingFace token (or set HF_TOKEN env variable)

@@ -36,8 +36,18 @@ class Config:
     LR_SCHEDULER_TYPE = "linear"
     SEED = 3407
     OUTPUT_DIR = "outputs"
-    REPORT_TO = "none"  # Can be "wandb", "tensorboard", etc.
+    REPORT_TO = "none"  # Can be "wandb", "tensorboard", "all", "none"
     PACKING = False
+
+    # Logging and Tracking settings
+    USE_WANDB = False
+    USE_TENSORBOARD = False
+    WANDB_PROJECT = "miratts-finetuning"
+    WANDB_RUN_NAME = None  # Auto-generated if None
+    WANDB_ENTITY = None  # Your wandb username/team
+    WANDB_API_KEY = None  # Set via environment variable WANDB_API_KEY
+    WANDB_LOG_MODEL = False  # Log model checkpoints to wandb
+    TENSORBOARD_LOG_DIR = "runs"
 
     # Inference settings
     INFERENCE_TOP_K = 50
