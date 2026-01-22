@@ -1,6 +1,7 @@
 """
 Inference module for MiraTTS
 """
+import numpy as np
 import torch
 import librosa
 from .audio_codec import AudioCodecManager
@@ -103,6 +104,13 @@ class MiraInference:
         print("Decoding audio...")
         audio = self.audio_codec.decode(predicts_text, context_tokens)
 
+        # Convert torch.Tensor to numpy float32
+        if isinstance(audio, torch.Tensor):
+            audio = audio.cpu().float().numpy()  # .float() converts to float32
+        # Convert numpy float16 to float32 if needed
+        elif hasattr(audio, 'dtype') and audio.dtype == np.float16:
+            audio = audio.astype(np.float32)
+
         return audio
 
     def save_audio(self, audio, output_path: str, sample_rate: int = None):
@@ -110,13 +118,21 @@ class MiraInference:
         Save audio to file
 
         Args:
-            audio: Audio array
+            audio: Audio array (torch.Tensor or numpy.ndarray)
             output_path: Path to save audio file
             sample_rate: Sample rate. If None, uses config value.
         """
         import soundfile as sf
 
         sample_rate = sample_rate or self.config.OUTPUT_SAMPLE_RATE
+
+        # Convert torch.Tensor to numpy float32
+        if isinstance(audio, torch.Tensor):
+            audio = audio.cpu().float().numpy()
+        # Convert numpy float16 to float32 if needed (soundfile doesn't support float16)
+        elif hasattr(audio, 'dtype') and audio.dtype == np.float16:
+            audio = audio.astype(np.float32)
+
         print(f"Saving audio to {output_path}...")
         sf.write(output_path, audio, sample_rate)
         print("Audio saved!")

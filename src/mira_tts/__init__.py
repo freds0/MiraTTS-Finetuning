@@ -9,6 +9,7 @@ from .data_processor import DataProcessor
 from .trainer import MiraTrainer
 from .inference import MiraInference
 from .ljspeech_loader import LJSpeechLoader
+from .custom_loader import CustomDatasetLoader
 
 __version__ = "0.1.0"
 
@@ -20,4 +21,5 @@ __all__ = [
     "MiraTrainer",
     "MiraInference",
     "LJSpeechLoader",
+    "CustomDatasetLoader",
 ]
