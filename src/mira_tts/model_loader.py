@@ -22,21 +22,32 @@ class ModelLoader:
         self.tokenizer = None
         self.model_path = None
 
-    def load_model(self):
+    def load_model(self, hf_token: str = None):
         """
         Load the MiraTTS model and tokenizer
+
+        Args:
+            hf_token: Optional HuggingFace token for private repositories
 
         Returns:
             tuple: (model, tokenizer)
         """
+        import os
         Config.setup_environment()
 
-        print(f"Downloading model from {self.config.MODEL_NAME}...")
-        self.model_path = snapshot_download(self.config.MODEL_NAME)
+        model_name = self.config.MODEL_NAME
+
+        # Check if it's a local path or a HuggingFace model ID
+        if os.path.exists(model_name):
+            print(f"Loading model from local path: {model_name}")
+            self.model_path = model_name
+        else:
+            print(f"Downloading model from HuggingFace: {model_name}...")
+            self.model_path = snapshot_download(model_name, token=hf_token)
 
         print(f"Loading model...")
         self.model, self.tokenizer = FastModel.from_pretrained(
-            model_name=self.config.MODEL_NAME,
+            model_name=self.model_path,
             max_seq_length=self.config.MAX_SEQ_LENGTH,
             dtype=getattr(torch, self.config.DTYPE),
             full_finetuning=self.config.FULL_FINETUNING,

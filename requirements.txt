@@ -32,6 +32,9 @@ einx
 torchcodec
 onnxruntime-gpu
 
+# Inference
+vllm
+
 # MiraTTS Dependencies (from git)
 git+https://github.com/ysharma3501/FastBiCodec.git
 git+https://github.com/ysharma3501/FlashSR.git

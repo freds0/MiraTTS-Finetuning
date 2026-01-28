@@ -179,6 +179,57 @@ python test_model.py \
     --audio-file "reference.wav"
 ```
 
+### Batch Inference with SparkTTS Integration
+
+For batch processing multiple texts using the SparkTTS/MiraTTS inference pipeline:
+
+```bash
+python -m src.mira_tts.inference_from_sparktts \
+    --checkpoint "path/to/model_checkpoint" \
+    --txt "input_texts.txt" \
+    --output_dir "outputs/" \
+    --ref_audio "reference_audio.wav" \
+    --gpu_mem 0.6
+```
+
+#### Parameters:
+
+- `--checkpoint` (required): Path to the LLM model directory (the trained checkpoint)
+- `--txt` (required): Path to input text file (one sentence per line)
+- `--output_dir` (required): Directory where output .wav files will be saved
+- `--ref_audio` (required): Path to reference audio file for voice cloning
+- `--gpu_mem` (optional): GPU memory utilization as a float between 0.0-1.0. Default: 0.6
+
+#### Example:
+
+```bash
+python -m src.mira_tts.inference_from_sparktts \
+    --checkpoint "./outputs_ljspeech/checkpoint-500" \
+    --txt "./texts.txt" \
+    --output_dir "./generated_audio/" \
+    --ref_audio "./reference/speaker.wav" \
+    --gpu_mem 0.7
+```
+
+#### Input text file format (texts.txt):
+
+```
+This is the first sentence to synthesize.
+This is the second sentence.
+And this is the third one.
+```
+
+#### Output:
+
+Generated audio files will be saved as `00000.wav`, `00001.wav`, `00002.wav`, etc., following the line order from the input text file.
+
+#### Notes:
+
+- The reference audio is used for voice cloning - all generated audio will match the speaker's voice characteristics
+- Output audio is 48kHz mono format
+- The script automatically handles CUDA memory management with periodic cache clearing
+- For large batches, consider using `--gpu_mem 0.6` to leave room for the audio codec
+
 ## Configuration
 
 All configuration parameters can be modified in [src/mira_tts/config.py](src/mira_tts/config.py):
